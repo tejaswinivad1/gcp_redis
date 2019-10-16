@@ -1,6 +1,7 @@
 ---
 # Google Compute Engine required authentication global variables
 # (Replace 'YOUR_PROJECT_ID' with the Project ID used in creating your GCP project.)
-project: google.com:graphite-playground
-credentials_file: ~/serviceaccounts/drawfork.json
+project: myproject-255706
+credentials_file: ~/serviceaccounts/anilgcp.json
 auth_kind: serviceaccount
+service_mail: 565146480958-compute@developer.gserviceaccount.com

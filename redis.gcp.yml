@@ -1,0 +1,5 @@
+plugin: gcp_compute
+projects:
+  - myproject-255706
+auth_kind: serviceaccount
+service_account_file: ~/serviceaccounts/anilgcp.json

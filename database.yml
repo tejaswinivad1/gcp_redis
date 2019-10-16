@@ -1,0 +1,8 @@
+---
+- name: Install template and redis db
+  hosts: gce_instances
+  become: yes
+  become_method: sudo
+  roles:
+#    - xlstemp
+    - redis 

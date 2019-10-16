@@ -1,5 +1,3 @@
 ---
-# compute-video-demo-ansible
-- include: gce-instances.yml
-- include: web.yml
-- include: gce-lb.yml
+ - include: gce-instances.yml
+ - include: database.yml

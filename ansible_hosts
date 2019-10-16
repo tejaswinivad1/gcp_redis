@@ -1,5 +1,5 @@
 [local]
-localhost ansible_connection=local
+localhost ansible_connection=local ansible_python_interpreter=/usr/bin/python
 
 [gce_instances]
-myinstance[1:4]
+myinstance1 ansible_host=34.69.216.131
