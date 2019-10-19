@@ -5,15 +5,6 @@
     - gce_vars/auth
     - gce_vars/machines
     - gce_vars/zone 
-  vars:
-      gcp_project: myproject-255706
-      gcp_cred_kind: serviceaccount
-      gcp_cred_file: ~/serviceaccounts/anilgcp.json
-      zone: "us-central1-a"
-      region: "us-central1"
-      machines:
-        - redis1
-        - redis2 
 
   tasks:
    - name: create a disk
@@ -69,15 +60,18 @@
          disks:
            - auto_delete: true
              boot: true
-             source: "disk-{{ item }}"
+             source: "{{ disk }}"
+             initialize_params:
+               disk_name: "disk-{{ item }}"
+               source_image: "{{ image }}"
+               disk_size_gb: 10
          metadata:
-             ssh-keys: nisum:ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDW2hqUKA9eVTFoNLQUlsOLXM0/9kiarANvhqA0fD8Zcvr1AH/MDirow+oJcIGibdtaPxfA66ukHsdOa3MKgft7eGSeZGeCcASQK8MSRPS5ZGXsFPImi/XFpZ8bId7ebKRhEEMrWFC3Qh/AwviRbKpqbvBxg/4DC2+J9+RPyRNlgx+LbUAP6F+WHt7XgGVMAhIY9X51hnkCU5ueKL3iT0j82jXVxzjKjpOIG/9O5aLSyPgDU/N2JxyA48A5q7lneKQJNL7mQF+0w0KbIko4dPYMAPAEhKqgI1zzzDDb7shcexGJqrotO4+KLkqYzrG+DojNZDoV36pvwCZdRORqdP6X nisum@DESKTOP-64O0AD7
+             ssh-keys: "{{ ssh_key }}"
          network_interfaces:
-             - network: "{{ network }}"
-               access_configs:
-                 - name: 'External NAT'
-                   nat_ip: "address-{{ item }}"
-                   type: 'ONE_TO_ONE_NAT'
+           - network:
+               selfLink: "projects/runscope-228819/global/networks/dev"
+             subnetwork:
+               selfLink: "projects/runscope-228819/regions/us-central1/subnetworks/dev" 
          zone: "{{ zone }}"
          project: "{{ gcp_project }}"
          auth_kind: "{{ gcp_cred_kind }}"

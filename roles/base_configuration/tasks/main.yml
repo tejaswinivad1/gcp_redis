@@ -1,4 +1,3 @@
----
 - name: add group "admin"
   group: name=admin
 
@@ -11,14 +10,13 @@
     validate: 'visudo -cf %s'
 
 - name: add group "src"
-  group: 
-    name:src
+  group: name=src
 
 - name: ensure "src" with right permissions
   file: 
-    path:/usr/src/
-    owner:root
-    group:src
-    state:directory
-    recurse:yes
-    mode:0755
+    path: /usr/src/
+    owner: root
+    group: src
+    state: directory
+    recurse: yes
+    mode: 0755
