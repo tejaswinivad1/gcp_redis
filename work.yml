@@ -38,7 +38,7 @@
 
    - name: create a address
      gcp_compute_address:
-         name: 'address-{{ item }}'
+         name: 'addr-redis1'
          region: "{{ region }}"
          project: "{{ gcp_project }}"
          auth_kind: "{{ gcp_cred_kind }}"
@@ -46,11 +46,10 @@
          scopes:
            - https://www.googleapis.com/auth/compute
          state: present
-     with_items: "{{ machines }}"    
-     register: address
+     register: addr
 
    - debug:
-       var: address
+       var: addr
 
    - name: create a instance
      gcp_compute_instance:
@@ -69,9 +68,9 @@
              ssh-keys: "{{ ssh_key }}"
          network_interfaces:
            - network:
-               selfLink: "projects/runscope-228819/global/networks/dev"
+               selfLink: "projects/{{ gcp_project }}/global/networks/dev"
              subnetwork:
-               selfLink: "projects/runscope-228819/regions/us-central1/subnetworks/dev" 
+               selfLink: "projects/{{ gcp_project }}/regions/{{ region }}/subnetworks/dev"
          zone: "{{ zone }}"
          project: "{{ gcp_project }}"
          auth_kind: "{{ gcp_cred_kind }}"
@@ -83,18 +82,20 @@
            - https://www.googleapis.com/auth/devstorage.read_only
            - https://www.googleapis.com/auth/ndev.clouddns.readwrite
      with_items: "{{ machines }}"
-     register: instance
+     register: gce_inst
 
    - debug:
-       var: instance
+       var: gce_inst
+
+   - shell: gcloud compute instances add-access-config "test-{{ item }}" --zone "{{ zone }}" --access-config-name "External NAT" --address "{{ addr.address }}"
+     run_once: true
+     with_items: "{{ machines }}"
 
    - name: Wait for SSH to come up
-     wait_for: host={{ item.address }} port=22 delay=10 timeout=60
-     with_items: "{{ address.stdout_lines }}"
+     wait_for: host={{ addr.address }} port=22 delay=10 timeout=60
 
    - name: Add host to groupname
-     add_host: hostname={{ item.address }} groupname=new_instances
-     with_items: "{{ address.stdout_lines }}"
+     add_host: hostname={{ addr.address }} groupname=new_instances
   
 - name: Manage new instances
   hosts: new_instances
