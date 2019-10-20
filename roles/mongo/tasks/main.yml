@@ -1,0 +1,21 @@
+  - name: download latest stable mongo
+    yum: name=https://runscope-packages.s3.amazonaws.com/mongodb-org-server-4.2.0-1.el7.x86_64.rpm
+
+  - name: create mongo group
+    group: name=mongo state=present system=yes
+
+  - name: create mongo user
+    user: name=mongo group=mongo createhome=no shell=/bin/false system=yes state=present
+
+  - name: make sure that /mongo/data exists
+    file: path=/mongo/data state=directory mode=0755 group=mongo owner=mongo
+
+  - name: make sure that /mongo/logs exists
+    file: path=/mongo/logs state=directory mode=0755 group=mongo owner=mongo
+
+  - name: make sure that /mongo/audit exists
+    file: path=/mongo/audit state=directory mode=0755 group=mongo owner=mongo
+
+  - name: ensure mongo service is restarted
+    service: name=mongod state=restarted
+

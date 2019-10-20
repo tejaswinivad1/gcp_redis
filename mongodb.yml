@@ -9,7 +9,7 @@
   tasks:
    - name: create a disk
      gcp_compute_disk:
-         name: 'disk-{{ item }}'
+         name: 'disk-mongo'
          size_gb: 10
          source_image: '{{ image }}'
          zone: "{{ zone }}"
@@ -19,7 +19,6 @@
          scopes:
            - https://www.googleapis.com/auth/compute
          state: present
-     with_items: "{{ machines }}"
      register: disk
 
    - debug:
@@ -27,7 +26,7 @@
 
    - name: create a network
      gcp_compute_network:
-         name: 'dev1'
+         name: 'dev'
          project: "{{ gcp_project }}"
          auth_kind: "{{ gcp_cred_kind }}"
          service_account_file: "{{ gcp_cred_file }}"
@@ -38,7 +37,7 @@
 
    - name: create a address
      gcp_compute_address:
-         name: 'addr-{{ item }}'
+         name: 'addr-mongo'
          region: "{{ region }}"
          project: "{{ gcp_project }}"
          auth_kind: "{{ gcp_cred_kind }}"
@@ -46,36 +45,28 @@
          scopes:
            - https://www.googleapis.com/auth/compute
          state: present
-     with_items: "{{ machines }}"
      register: addr
 
    - debug:
-       msg: "{{ addr | json_query('results[*].address') }}"
-
-   - name: Get Record ID
-     set_fact:
-       gcp_ext_ip: "{{ addr | json_query('results[*].address') }}"
+       var: addr.address
 
    - name: create a instance
      gcp_compute_instance:
          state: present
-         name: "test-{{ item }}"
+         name: "test-mongo"
          machine_type: n1-standard-1
          disks:
            - auto_delete: true
              boot: true
              source: "{{ disk }}"
-             initialize_params:
-               disk_name: "disk-{{ item }}"
-               source_image: "{{ image }}"
-               disk_size_gb: 10
          metadata:
              ssh-keys: "{{ ssh_key }}"
          network_interfaces:
-           - network:
-               selfLink: "projects/{{ gcp_project }}/global/networks/dev"
-             subnetwork:
-               selfLink: "projects/{{ gcp_project }}/regions/{{ region }}/subnetworks/dev"
+           - network: "{{ network }}"
+             access_configs:
+               - name: 'External NAT'
+                 nat_ip: "{{ addr }}"
+                 type: 'ONE_TO_ONE_NAT'
          zone: "{{ zone }}"
          project: "{{ gcp_project }}"
          auth_kind: "{{ gcp_cred_kind }}"
@@ -86,19 +77,10 @@
            - https://www.googleapis.com/auth/compute
            - https://www.googleapis.com/auth/devstorage.read_only
            - https://www.googleapis.com/auth/ndev.clouddns.readwrite
-     with_items: "{{ machines }}"
      register: gce_inst
 
    - debug:
-       msg: "{{ gce_inst.results }}" 
-
-   - shell: echo `gcloud compute instances add-access-config "test-{{ item.machines }}" --zone "{{ zone }}" --access-config-name "External NAT" --address "{{ item.gcp_ext_ip }}"`
-
-   - shell: gcloud compute instances add-access-config "test-{{ item.machines }}" --zone "{{ zone }}" --access-config-name "External NAT" --address "{{ item.gcp_ext_ip }}"
-     run_once: true
-     with_items: 
-       - "{{ gcp_ext_ip }}"
-       - "{{ machines }}"
+       var: gce_inst
 
    - name: Wait for SSH to come up
      wait_for: host={{ addr.address }} port=22 delay=10 timeout=60
@@ -111,5 +93,5 @@
   connection: ssh
   sudo: True
   roles:
-    - base_configuration
-    - redis
+    - base_mongo_configuration
+    - mongo
