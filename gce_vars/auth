@@ -1,8 +1,8 @@
 ---
 # Google Compute Engine required authentication global variables
 # (Replace 'YOUR_PROJECT_ID' with the Project ID used in creating your GCP project.)
-gcp_project: myproject-255706
-gcp_cred_file: ~/serviceaccounts/anilgcp.json
+gcp_project: runscope-228819
+gcp_cred_file: ~/serviceaccounts/runscope-228819-36d090ac796d.json
 gcp_cred_kind: serviceaccount
-service_mail: 565146480958-compute@developer.gserviceaccount.com
-ssh_key: nisum:ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDW2hqUKA9eVTFoNLQUlsOLXM0/9kiarANvhqA0fD8Zcvr1AH/MDirow+oJcIGibdtaPxfA66ukHsdOa3MKgft7eGSeZGeCcASQK8MSRPS5ZGXsFPImi/XFpZ8bId7ebKRhEEMrWFC3Qh/AwviRbKpqbvBxg/4DC2+J9+RPyRNlgx+LbUAP6F+WHt7XgGVMAhIY9X51hnkCU5ueKL3iT0j82jXVxzjKjpOIG/9O5aLSyPgDU/N2JxyA48A5q7lneKQJNL7mQF+0w0KbIko4dPYMAPAEhKqgI1zzzDDb7shcexGJqrotO4+KLkqYzrG+DojNZDoV36pvwCZdRORqdP6X nisum@DESKTOP-64O0AD7
+service_mail: 1084740193584-compute@developer.gserviceaccount.com
+ssh_key: ansiuser:ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCaRvNtsBH7LyX4jioD8O1C04V/2ri7m37UoPADTFS9aRk5jhf3Dy5tNy2QNTNiEDQM26CiwsEf5HGPzRQ9pc54pblt8PZGPlgRk7wf3SB0yG5KS2omzbTL3owMJVOl0fxDag5AeNDC6HHMuGv2K6oocZL6RY4O8oZklkv4bHK0yfJfvxv93ZfKkUuMxI+iQqrUqKT2Pra8pr6K9rVdEC7IUDaUia/ij3ZCmOQSHY0F3FJgGpx7quOOXfvYoyXJGMbWAW5fkXTYHgFBedwYwGIX/N8Df9ZgzVDk3UOTPMxke7N+Yqm2j+mWeu9ZzUO4RUkogMq/8TjSjCM7+ZmK47cf ansiuser@ansible
