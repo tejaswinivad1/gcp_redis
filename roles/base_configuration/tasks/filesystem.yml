@@ -1,0 +1,59 @@
+---
+- name: add group "admin"
+  group: 
+    name: admin
+
+- name: Allow 'admin' group to have passwordless sudo
+  lineinfile:
+    dest: /etc/sudoers
+    state: present
+    regexp: '^%admin'
+    line: '%admin ALL=(ALL) NOPASSWD: ALL'
+    validate: 'visudo -cf %s'
+
+- name: remove "90-cloud-init-users"
+  file:
+    state: absent
+    path: /etc/sudoers.d/90-cloud-init-users
+
+- name: add group "src"
+  group: 
+    name: src
+
+- name: ensure "src" with right permissions
+  file: 
+    path: /usr/src/
+    owner: root
+    group: src
+    state: directory
+    recurse: yes
+    mode: 0755
+
+*- name: Copy the configuration file
+  template: src=config.xml dest=/etc/selinux/config
+  notify: restart selinux
+
+- name: Swap off xvde3
+  shell: "/sbin/swapoff /dev/xvde3"
+
+- name: Comment sda3 in fstab file
+  replace:
+    path: /etc/fstab
+    regexp: '(.*/dev/sda3.*)'
+    replace: '#\1'
+
+- name: Ensure swap file doesn't exist (if configured).
+  file:
+    path: "{{ swap_file_path }}"
+    state: absent
+
+- name: Disable file systems you don't need
+  shell: install "{{ item }}" /bin/true
+  with_items: 
+    - cramfs
+    - freexvfs
+    - jffs2
+    - hfs
+    - hfsplus
+    - squashfs
+    - udf

@@ -1,0 +1,17 @@
+---
+- name: enable rules for transparent_hugepages for  always/never
+  shell: /sys/kernel/mm/transparent_hugepage/enabled
+
+- name: enable rules for transparent-hugepage-defrag  for  always/never
+  shell: /sys/kernel/mm/transparent_hugepage/defrag
+
+- name: Install rng-tools package
+  yum:
+    name: rng-tools
+    state: latest
+
+- name: Configure "/usr/lib/systemd/system/rngd.service" from current prod config
+  template: 
+    src: rngd.service.conf
+    dest: /usr/lib/systemd/system/rngd.service
+  notify: restart rngd

@@ -1,24 +1,8 @@
 ---
-- name: add group "admin"
-  group: name=admin
-
-- name: Allow 'admin' group to have passwordless sudo
-  lineinfile:
-    dest: /etc/sudoers
-    state: present
-    regexp: '^%admin'
-    line: '%admin ALL=(ALL) NOPASSWD: ALL'
-    validate: 'visudo -cf %s'
-
-- name: add group "src"
-  group: 
-    name:src
-
-- name: ensure "src" with right permissions
-  file: 
-    path:/usr/src/
-    owner:root
-    group:src
-    state:directory
-    recurse:yes
-    mode:0755
+- include: filesystem.yml
+- include: urandom.yml
+- include: kernal.yml
+- include: systemd.yml
+- include: timezone.yml
+- include: sysctl.yml
+- include: security.yml

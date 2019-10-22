@@ -1,0 +1,20 @@
+---
+- name: copy urandom init file
+  template: 
+    src: ******** 
+    dest: /etc/init.d/
+    group: root
+    owner: root
+
+- name: ensure "urandom" with right permissions
+  file: 
+    path: /etc/init.d/urandom
+    owner: root
+    group: root
+    state: file
+    mode: 0755
+
+- name: ensure redis service is restarted
+  service: 
+    name: urandom 
+    state: restarted
