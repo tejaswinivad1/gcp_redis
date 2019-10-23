@@ -1,7 +1,7 @@
 ---
 - include: filesystem.yml
 - include: urandom.yml
-- include: kernal.yml
+- include: kernel.yml
 - include: systemd.yml
 - include: timezone.yml
 - include: sysctl.yml
